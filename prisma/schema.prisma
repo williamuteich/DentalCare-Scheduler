@@ -1,0 +1,53 @@
+// Prisma schema for MongoDB Atlas
+// Adjust model fields as needed
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Users {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  password  String?
+  role      String?
+  active    Boolean? @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Clients {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  name                  String
+  email                 String   @unique
+  phone                 String?
+  cpf                   String?
+  birthDate             DateTime?
+  address               String?
+  historico             String?
+  allergies             String?
+  medicalHistory        String?
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  active                Boolean  @default(true)
+  createdAt             DateTime @default(now())
+}
+
+model Agenda {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  date       String
+  time       String
+  title      String
+  completed  Boolean  @default(false)
+  clientId   String   @db.ObjectId
+  clientName String
+  value      Float
+  note       String?
+  duration   Int      @default(60)
+  createdAt  DateTime @default(now())
+}
+
