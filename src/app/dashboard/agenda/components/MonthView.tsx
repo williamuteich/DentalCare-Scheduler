@@ -1,4 +1,3 @@
-// components/agenda/MonthView.tsx
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { format, isToday, isSameMonth, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
 import { FiClock } from 'react-icons/fi';
 import { useMemo } from 'react';
+import Link from 'next/link';
 
 interface MonthViewProps {
   loading: boolean;
@@ -92,7 +92,7 @@ export const MonthView = ({
                   {isSameMonth(day, currentDate) && getAppointmentsForDay(day).slice(0, 2).map(appt => (
                     <div 
                       key={appt._id || appt.id || `${appt.date}-${appt.time}`}
-                      className="mb-1 p-1 bg-blue-50 rounded text-xs truncate cursor-pointer hover:bg-blue-100"
+                      className="mb-1 p-1 bg-blue-50 rounded text-xs truncate cursor-pointer hover:bg-blue-100 flex flex-col gap-1"
                       onClick={() => onAppointmentClick(appt)}
                     >
                       <div className="font-medium">{appt.time}</div>
@@ -102,6 +102,13 @@ export const MonthView = ({
                           Concluído
                         </span>
                       )}
+                      <Link
+                        href={`/prontuario/${appt.clientId}`}
+                        onClick={e => e.stopPropagation()}
+                        className="mt-1 inline-block text-blue-600 hover:underline font-medium"
+                      >
+                        Ver Prontuário
+                      </Link>
                     </div>
                   ))}
                   

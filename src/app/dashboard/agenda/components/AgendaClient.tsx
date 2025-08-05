@@ -8,7 +8,6 @@ import {
 import { ptBR } from "date-fns/locale";
 import { toast } from "react-hot-toast";
 
-// Componentes
 import { AgendaHeader } from "./AgendaHeader";
 import { StatsCards } from "./StatsCards";
 import { SearchBar } from "./SearchBar";
@@ -17,7 +16,6 @@ import { WeekView } from "./WeekView";
 import { MonthView } from "./MonthView";
 import { AppointmentForm } from "./AppointmentForm";
 
-// Tipos de dados
 type ViewMode = "day" | "week" | "month";
 
 interface Client {
@@ -53,7 +51,6 @@ const AgendaClient: React.FC = () => {
   const [stats, setStats] = useState({ total: 0, completed: 0, revenue: 0 });
   const [processing, setProcessing] = useState<string | null>(null);
 
-  // Buscar clientes
   const fetchClients = useCallback(async () => {
     try {
       const res = await fetch("/api/privada/clients", {
@@ -72,7 +69,6 @@ const AgendaClient: React.FC = () => {
     }
   }, []);
 
-  // Buscar agendamentos para um período
   const fetchAppointmentsForPeriod = useCallback(async (startDate: string, endDate: string) => {
     setLoading(true);
     try {
@@ -94,7 +90,6 @@ const AgendaClient: React.FC = () => {
     }
   }, []);
 
-  // Buscar agendamentos para o dia atual
   const fetchAppointmentsForDay = useCallback(async (dateStr: string) => {
     setLoading(true);
     try {
@@ -122,7 +117,6 @@ const AgendaClient: React.FC = () => {
     }
   }, []);
 
-  // HEADER TEXT MEMOIZADO
   const headerText = useMemo(() => {
     if (viewMode === "day") {
       return format(currentDate, "EEEE, d 'de' MMMM", { locale: ptBR });
@@ -142,7 +136,6 @@ const AgendaClient: React.FC = () => {
     }
   }, [viewMode, currentDate]);
 
-  // AGENDAMENTOS FILTRADOS MEMOIZADOS
   const filteredAppointments = useMemo(() => {
     if (!searchTerm) return appointments;
     
@@ -155,7 +148,6 @@ const AgendaClient: React.FC = () => {
     );
   }, [appointments, searchTerm]);
 
-  // Navegação
   const navigate = useCallback((direction: number) => {
     if (viewMode === "day") {
       setCurrentDate(prev => addDays(prev, direction));
@@ -166,14 +158,11 @@ const AgendaClient: React.FC = () => {
     }
   }, [viewMode]);
 
-  // Buscar dados iniciais
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        // Buscar clientes primeiro
         await fetchClients();
         
-        // Buscar agendamentos baseado na view
         if (viewMode === "day") {
           await fetchAppointmentsForDay(format(currentDate, "yyyy-MM-dd"));
         } else {
@@ -346,7 +335,6 @@ const AgendaClient: React.FC = () => {
     }
   };
 
-  // Marcar como concluído
   const handleComplete = async (id: string) => {
     setProcessing(`complete-${id}`);
     
@@ -360,7 +348,6 @@ const AgendaClient: React.FC = () => {
       if (res.ok) {
         toast.success("Agendamento concluído!");
         
-        // Atualizar a lista
         if (viewMode === "day") {
           await fetchAppointmentsForDay(format(currentDate, "yyyy-MM-dd"));
         } else {
@@ -384,7 +371,6 @@ const AgendaClient: React.FC = () => {
     }
   };
 
-  // Abrir modal de edição
   const openEditModal = (appt: Appointment) => {
     setEditingAppointment(appt);
     setOpenModal(true);

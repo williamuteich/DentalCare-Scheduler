@@ -4,10 +4,8 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { FiCheck, FiEdit, FiLoader, FiPlus, FiX } from 'react-icons/fi';
 import { format } from 'date-fns';
 import { useState, useEffect } from 'react';
 
@@ -22,8 +20,6 @@ interface AppointmentFormProps {
   processing?: string | null;
 }
 
-
-// Componente separado para o select de pacientes
 function SelectPaciente({ clients, value, onChange }: { clients: any[]; value: string; onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void }) {
   return (
     <select
@@ -48,11 +44,8 @@ export const AppointmentForm = ({
   open,
   onOpenChange,
   clients,
-  onSubmit,
   currentDate,
   editingAppointment,
-  allAppointments,
-  processing
 }: AppointmentFormProps) => {
   const [selectedClientId, setSelectedClientId] = useState<string>("");
   const [title, setTitle] = useState<string>("");
@@ -63,15 +56,12 @@ export const AppointmentForm = ({
   const [duration, setDuration] = useState<string>("60");
   const [submitting, setSubmitting] = useState(false);
 
-  // Preencher campos ao editar
   useEffect(() => {
     if (editingAppointment) {
-      // Encontrar o cliente correto baseado no nome ou ID
-      const clientId = editingAppointment.clientId || 
-                      (editingAppointment.client && (editingAppointment.client._id || editingAppointment.client.id)) ||
-                      "";
-      
-      // Se não encontrarmos por ID, tentar encontrar pelo nome do cliente
+      const clientId = editingAppointment.clientId ||
+        (editingAppointment.client && (editingAppointment.client._id || editingAppointment.client.id)) ||
+        "";
+
       let finalClientId = clientId;
       if (!clientId && editingAppointment.clientName) {
         const foundClient = clients.find(c => c.name === editingAppointment.clientName);
@@ -79,7 +69,7 @@ export const AppointmentForm = ({
           finalClientId = foundClient._id || foundClient.id;
         }
       }
-      
+
       setSelectedClientId(finalClientId);
       setTitle(editingAppointment.title || "");
       setDate(editingAppointment.date || format(currentDate || new Date(), 'yyyy-MM-dd'));
@@ -118,7 +108,6 @@ export const AppointmentForm = ({
     try {
       let res;
       if (editingAppointment && (editingAppointment.id || editingAppointment._id)) {
-        // PATCH: só envia campos alterados
         const patchPayload: any = {
           id: editingAppointment.id || editingAppointment._id
         };
@@ -136,7 +125,6 @@ export const AppointmentForm = ({
           body: JSON.stringify(patchPayload)
         });
       } else {
-        // POST: novo agendamento
         const payload = {
           clientId: client._id || client.id,
           clientName: client.name,

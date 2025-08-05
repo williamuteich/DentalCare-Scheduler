@@ -1,4 +1,3 @@
-// components/agenda/AgendaHeader.tsx
 'use client';
 
 import { Button } from '@/components/ui/button';

@@ -1,4 +1,3 @@
-// components/agenda/WeekView.tsx
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +6,7 @@ import { format, isToday, startOfWeek, endOfWeek, eachDayOfInterval } from 'date
 import { ptBR } from 'date-fns/locale';
 import { FiClock } from 'react-icons/fi';
 import { useMemo } from 'react';
+import Link from 'next/link';
 
 interface WeekViewProps {
   loading: boolean;
@@ -90,7 +90,7 @@ export const WeekView = ({
                   {getAppointmentsForDay(day).map(appt => (
                     <div 
                       key={appt._id || appt.id || `${appt.date}-${appt.time}`}
-                      className="mb-2 p-2 bg-blue-50 rounded-md border border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors"
+                      className="mb-2 p-2 bg-blue-50 rounded-md border border-blue-100 cursor-pointer hover:bg-blue-100 transition-colors flex flex-col gap-1"
                       onClick={() => onAppointmentClick(appt)}
                     >
                       <div className="flex justify-between items-start">
@@ -105,6 +105,13 @@ export const WeekView = ({
                           Concluído
                         </span>
                       )}
+                      <Link
+                        href={`/prontuario/${appt.clientId}`}
+                        onClick={e => e.stopPropagation()}
+                        className="mt-1 inline-block text-blue-600 hover:underline font-medium"
+                      >
+                        Ver Prontuário
+                      </Link>
                     </div>
                   ))}
                 </div>

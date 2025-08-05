@@ -1,4 +1,3 @@
-// components/agenda/StatsCards.tsx
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

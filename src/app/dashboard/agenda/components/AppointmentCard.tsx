@@ -4,6 +4,7 @@
 import { Button } from '@/components/ui/button';
 import { FiCheck, FiEdit, FiTrash, FiUser, FiDollarSign, FiInfo, FiClock, FiLoader } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 interface AppointmentCardProps {
   appointment: any;
@@ -75,6 +76,14 @@ export const AppointmentCard = ({
       </div>
       
       <div className="flex sm:flex-col gap-2 sm:w-32 justify-end">
+        <Link
+          href={`/prontuario/${appointment.clientId}`}
+          className="inline-block text-blue-600 hover:underline font-medium mb-2"
+          style={{ textAlign: 'center' }}
+          tabIndex={0}
+        >
+          Ver Prontuário
+        </Link>
         <Button
           onClick={() => onComplete(appointment.id || appointment._id)}
           disabled={appointment.completed || processing === `complete-${appointment.id || appointment._id}`}
