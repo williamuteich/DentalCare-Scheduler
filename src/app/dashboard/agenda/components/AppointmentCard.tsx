@@ -88,7 +88,7 @@ export const AppointmentCard = ({
           onClick={() => onComplete(appointment.id || appointment._id)}
           disabled={appointment.completed || processing === `complete-${appointment.id || appointment._id}`}
           variant={appointment.completed ? 'secondary' : 'default'}
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 cursor-pointer"
         >
           {processing === `complete-${appointment.id || appointment._id}` ? (
             <FiLoader className="animate-spin" size={14} />
@@ -103,7 +103,7 @@ export const AppointmentCard = ({
             onClick={() => onEdit(appointment)}
             disabled={processing === `edit-${appointment.id || appointment._id}`}
             variant="default"
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 cursor-pointer"
           >
             {processing === `edit-${appointment.id || appointment._id}` ? (
               <FiLoader className="animate-spin" size={14} />
@@ -117,7 +117,7 @@ export const AppointmentCard = ({
             onClick={() => onDelete(appointment.id || appointment._id)}
             disabled={processing === `delete-${appointment.id || appointment._id}`}
             variant="destructive"
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 cursor-pointer hover:bg-red-500 hover:text-white"
           >
             {processing === `delete-${appointment.id || appointment._id}` ? (
               <FiLoader className="animate-spin" size={14} />

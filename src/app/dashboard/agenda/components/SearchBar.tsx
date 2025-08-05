@@ -28,7 +28,7 @@ export const SearchBar = ({
         />
       </div>
       
-      <Button onClick={onNewAppointment} className="flex items-center gap-2">
+      <Button onClick={onNewAppointment} className="flex items-center gap-2 hover:bg-neutral-800 cursor-pointer hover:text-white">
         <FiPlus size={18} />
         Novo Agendamento
       </Button>

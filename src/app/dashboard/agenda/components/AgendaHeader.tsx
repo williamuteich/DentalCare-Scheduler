@@ -3,7 +3,6 @@
 import { Button } from '@/components/ui/button';
 import { FiChevronLeft, FiChevronRight, FiClock } from 'react-icons/fi';
 import { format, isToday } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 
 interface AgendaHeaderProps {
   currentDate: Date;
@@ -27,7 +26,7 @@ export const AgendaHeader = ({
       <div>
         <h1 className="text-2xl font-bold text-gray-800">Agenda de Atendimentos</h1>
         <div className="flex items-center gap-3 mt-2">
-          <Button variant="outline" size="icon" onClick={() => onNavigate(-1)}>
+          <Button variant="outline" className='cursor-pointer hover:bg-neutral-200' size="icon" onClick={() => onNavigate(-1)}>
             <FiChevronLeft size={18} />
           </Button>
           
@@ -42,13 +41,14 @@ export const AgendaHeader = ({
             )}
           </div>
           
-          <Button variant="outline" size="icon" onClick={() => onNavigate(1)}>
+          <Button variant="outline" className='cursor-pointer hover:bg-neutral-200' size="icon" onClick={() => onNavigate(1)}>
             <FiChevronRight size={18} />
           </Button>
           
           <Button
             onClick={onToday}
             variant={isToday(currentDate) ? 'default' : 'secondary'}
+            className='cursor-pointer hover:bg-neutral-700'
           >
             Hoje
           </Button>
@@ -59,7 +59,7 @@ export const AgendaHeader = ({
         <Button
           onClick={() => onViewChange('day')}
           variant={viewMode === 'day' ? 'default' : 'secondary'}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:bg-neutral-800 cursor-pointer hover:text-white"
         >
           <FiClock size={16} /> Dia
         </Button>
@@ -67,7 +67,7 @@ export const AgendaHeader = ({
         <Button
           onClick={() => onViewChange('week')}
           variant={viewMode === 'week' ? 'default' : 'secondary'}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:bg-neutral-800 cursor-pointer hover:text-white"
         >
           <FiClock size={16} /> Semana
         </Button>
@@ -75,7 +75,7 @@ export const AgendaHeader = ({
         <Button
           onClick={() => onViewChange('month')}
           variant={viewMode === 'month' ? 'default' : 'secondary'}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:bg-neutral-800 cursor-pointer hover:text-white"
         >
           <FiClock size={16} /> Mês
         </Button>
