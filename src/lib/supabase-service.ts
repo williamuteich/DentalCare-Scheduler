@@ -1,5 +1,3 @@
-import { Client } from '@/types/client';
-
 export interface PatientNote {
   id: string;
   patient_id: string;
@@ -26,9 +24,13 @@ export interface ToothRecord {
   tooth_number: number;
   procedure: string;
   status: string;
+  observations?: string;
   notes?: string;
   created_at: string;
   updated_at?: string;
+  completed_at?: string;
+  priority?: string;
+  cost?: number;
 }
 
 export interface TreatmentPlan {

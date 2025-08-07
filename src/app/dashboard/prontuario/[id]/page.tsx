@@ -19,13 +19,14 @@ interface PatientRecordPageProps {
 export default async function PatientRecordPage({
   params,
 }: PatientRecordPageProps) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const client = await prisma.clients.findUnique({
       where: { id },
       include: {
         files: true,
+        toothRecords: true, 
       },
     });
     
@@ -47,23 +48,34 @@ export default async function PatientRecordPage({
               patientId={id}
               files={client.files.map((file: any) => ({
                 id: file.id,
-                patient_id: file.patientId ?? file.patient_id,
-                file_name: file.fileName ?? file.file_name,
-                file_path: file.filePath ?? file.file_path,
-                file_type: file.fileType ?? file.file_type,
-                file_size: file.fileSize ?? file.file_size,
+                patient_id: file.patientId,
+                file_name: file.fileName,
+                file_path: file.filePath,
+                file_type: file.fileType,
+                file_size: file.fileSize,
                 description: file.description,
-                created_at: file.createdAt ?? file.created_at,
-                original_name: file.originalName ?? file.original_name,
+                created_at: file.createdAt,
+                original_name: file.originalName,
               }))}
             />
           </div>
           <div className="lg:col-span-2 space-y-6">
-            {/*<ToothChart
+            <ToothChart
               patientId={id}
               patientName={client.name}
-              toothRecords={toothRecords}
+              toothRecords={client.toothRecords.map(record => ({
+                id: record.id,
+                patient_id: record.patientId,
+                tooth_number: record.toothNumber,
+                procedure: record.procedure,
+                observations: record.notes || '',
+                status: record.status as any,
+                created_at: record.createdAt.toISOString(),
+                updated_at: record.updatedAt?.toISOString() || '',
+              }))}
             />
+            
+            {/*
             <PatientNotes
               patientId={id}
               patientName={client.name}

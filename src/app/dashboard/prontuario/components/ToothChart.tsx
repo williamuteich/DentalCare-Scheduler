@@ -1,3 +1,6 @@
+// components/ToothChart.tsx
+'use client';
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -8,16 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
 import { Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-import PatientNotes from './PatientNotes';
-import TreatmentPlans from './TreatmentPlans';
-import { supabaseService, ToothRecord } from '@/lib/supabase-service';
-
-interface ToothChartProps {
-  patientId: string;
-  patientName: string;
-  toothRecords: ToothRecord[];
-  onToothRecordsUpdate: () => void;
-}
+import { ToothRecord } from '@/types';
+import { useRouter } from 'next/navigation';
+import { addToothRecord, updateToothRecord } from '@/app/actions/tooth-records';
 
 const procedures = [
   'Cárie',
@@ -48,12 +44,18 @@ const statusOptions = [
   { value: 'cancelled', label: 'Cancelado', icon: XCircle, color: 'text-red-600' },
 ];
 
+interface ToothChartProps {
+  patientId: string;
+  patientName: string;
+  toothRecords: ToothRecord[];
+}
+
 const ToothChart: React.FC<ToothChartProps> = ({ 
   patientId, 
   patientName, 
-  toothRecords,
-  onToothRecordsUpdate
+  toothRecords: initialToothRecords
 }) => {
+  const router = useRouter();
   const [selectedTooth, setSelectedTooth] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [procedure, setProcedure] = useState('');
@@ -62,6 +64,7 @@ const ToothChart: React.FC<ToothChartProps> = ({
   const [cost, setCost] = useState('');
   const [selectedToothRecords, setSelectedToothRecords] = useState<ToothRecord[]>([]);
   const [editingRecord, setEditingRecord] = useState<ToothRecord | null>(null);
+  const [toothRecords, setToothRecords] = useState<ToothRecord[]>(initialToothRecords);
 
   const handleToothClick = (toothNumber: number) => {
     setSelectedTooth(toothNumber);
@@ -91,20 +94,23 @@ const ToothChart: React.FC<ToothChartProps> = ({
         cost: cost ? parseFloat(cost) : undefined,
       };
 
-      await supabaseService.addToothRecord(newRecord);
+      // Adicionar ao banco de dados
+      const createdRecord = await addToothRecord(newRecord);
+      
+      // Atualizar estado local
+      const updatedRecords = [...toothRecords, createdRecord];
+      setToothRecords(updatedRecords);
+      
+      // Atualizar registros do dente selecionado
+      const updatedToothHistory = [...selectedToothRecords, createdRecord];
+      setSelectedToothRecords(updatedToothHistory);
 
       toast({
         title: 'Sucesso',
         description: 'Procedimento adicionado com sucesso!',
       });
 
-      // Atualizar os registros do dente
-      onToothRecordsUpdate();
       resetForm();
-      
-      // Atualizar a lista de registros do dente selecionado
-      const updatedToothHistory = [...selectedToothRecords, newRecord];
-      setSelectedToothRecords(updatedToothHistory);
     } catch (error) {
       console.error('Erro ao adicionar registro:', error);
       toast({
@@ -123,21 +129,28 @@ const ToothChart: React.FC<ToothChartProps> = ({
         completed_at: newStatus === 'completed' ? new Date().toISOString() : record.completed_at,
       };
 
-      await supabaseService.updateToothRecord(record.id, updatedRecord);
+      // Atualizar no banco de dados
+      const savedRecord = await updateToothRecord(record.id, updatedRecord);
+      
+      // Atualizar estado local
+      const updatedRecords = toothRecords.map(r => 
+        r.id === record.id ? savedRecord : r
+      );
+      setToothRecords(updatedRecords);
+      
+      // Atualizar lista local do dente selecionado
+      const updatedSelectedRecords = selectedToothRecords.map(r => 
+        r.id === record.id ? savedRecord : r
+      );
+      setSelectedToothRecords(updatedSelectedRecords);
 
       toast({
         title: 'Sucesso',
         description: 'Status atualizado com sucesso!',
       });
-
-      // Atualizar os registros do dente
-      onToothRecordsUpdate();
       
-      // Atualizar a lista local
-      const updatedRecords = selectedToothRecords.map(r => 
-        r.id === record.id ? updatedRecord : r
-      );
-      setSelectedToothRecords(updatedRecords);
+      // Recarregar dados na página
+      router.refresh();
     } catch (error) {
       console.error('Erro ao atualizar registro:', error);
       toast({

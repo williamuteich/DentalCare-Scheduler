@@ -92,59 +92,6 @@ export default async function PaginaClientes() {
   if (clientes.length === 0) {
     return (
       <div className="w-full  mx-auto p-4">
-        <div className="mb-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                <FiUser className="text-blue-600" size={24} />
-                Gerenciamento de Pacientes
-              </h1>
-              <p className="text-gray-600 mt-2">
-                Gerencie os pacientes da sua clínica odontológica
-              </p>
-            </div>
-            <BotaoAdicionarCliente />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-100 rounded-lg p-4 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="bg-blue-100 p-3 rounded-full">
-                  <FiUser className="text-blue-600" size={24} />
-                </div>
-                <div>
-                  <h3 className="text-gray-500 text-sm">Total de Pacientes</h3>
-                  <p className="text-2xl font-bold text-gray-800">0</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-100 rounded-lg p-4 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="bg-green-100 p-3 rounded-full">
-                  <FiUser className="text-green-600" size={24} />
-                </div>
-                <div>
-                  <h3 className="text-gray-500 text-sm">Ativos</h3>
-                  <p className="text-2xl font-bold text-gray-800">0</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-100 rounded-lg p-4 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="bg-amber-100 p-3 rounded-full">
-                  <FiFileText className="text-amber-600" size={24} />
-                </div>
-                <div>
-                  <h3 className="text-gray-500 text-sm">Com Histórico</h3>
-                  <p className="text-2xl font-bold text-gray-800">0</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="text-center py-12 px-4">
             <div className="inline-block bg-blue-50 p-4 rounded-full mb-4">
