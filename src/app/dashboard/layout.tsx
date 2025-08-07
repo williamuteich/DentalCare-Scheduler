@@ -3,7 +3,7 @@ import { auth as authOptions} from "@/lib/auth-config";
 import { redirect } from 'next/navigation';
 import Sidebar from "./components/sidebar";
 
-export default async function RootLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -16,10 +16,6 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en">
-      <body className="antialiased">
-        <Sidebar>{children}</Sidebar>
-      </body>
-    </html>
+    <Sidebar>{children}</Sidebar>
   );
 }

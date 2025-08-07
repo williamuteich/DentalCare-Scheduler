@@ -35,6 +35,67 @@ model Clients {
   emergencyContactPhone String?
   active                Boolean  @default(true)
   createdAt             DateTime @default(now())
+  
+  // Relacionamentos
+  files        PatientFile[]
+  notes        PatientNote[]
+  toothRecords ToothRecord[]
+  treatmentPlans TreatmentPlan[]
+}
+
+model PatientFile {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId   String   @db.ObjectId
+  fileName    String   // Nome do arquivo gerado (ex: 12345-documento.pdf)
+  originalName String  // Nome original do arquivo
+  fileType    String
+  fileSize    Int?
+  description String?
+  createdAt   DateTime @default(now())
+  
+  patient     Clients  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+}
+
+model PatientNote {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId String   @db.ObjectId
+  content   String
+  noteType  String   @default("general")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relacionamento
+  patient   Clients  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+}
+
+model ToothRecord {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId String   @db.ObjectId
+  toothNumber Int
+  procedure String
+  status    String   @default("pending")
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relacionamento
+  patient   Clients  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+}
+
+model TreatmentPlan {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId     String   @db.ObjectId
+  title         String
+  description   String
+  status        String   @default("planned")
+  estimatedCost Float?
+  startDate     DateTime?
+  endDate       DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relacionamento
+  patient       Clients  @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
 
 model Agenda {
