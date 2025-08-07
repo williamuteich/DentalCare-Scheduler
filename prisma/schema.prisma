@@ -21,9 +21,9 @@ model Users {
 }
 
 model Clients {
-  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
   name                  String
-  email                 String   @unique
+  email                 String    @unique
   phone                 String?
   cpf                   String?
   birthDate             DateTime?
@@ -33,27 +33,27 @@ model Clients {
   medicalHistory        String?
   emergencyContactName  String?
   emergencyContactPhone String?
-  active                Boolean  @default(true)
-  createdAt             DateTime @default(now())
-  
+  active                Boolean   @default(true)
+  createdAt             DateTime  @default(now())
+
   // Relacionamentos
-  files        PatientFile[]
-  notes        PatientNote[]
-  toothRecords ToothRecord[]
+  files          PatientFile[]
+  notes          PatientNote[]
+  toothRecords   ToothRecord[]
   treatmentPlans TreatmentPlan[]
 }
 
 model PatientFile {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  patientId   String   @db.ObjectId
-  fileName    String   // Nome do arquivo gerado (ex: 12345-documento.pdf)
-  originalName String  // Nome original do arquivo
-  fileType    String
-  fileSize    Int?
-  description String?
-  createdAt   DateTime @default(now())
-  
-  patient     Clients  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId    String   @db.ObjectId
+  fileName     String // Nome do arquivo gerado (ex: 12345-documento.pdf)
+  originalName String // Nome original do arquivo
+  fileType     String
+  fileSize     Int?
+  description  String?
+  createdAt    DateTime @default(now())
+
+  patient Clients @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
 
 model PatientNote {
@@ -63,39 +63,39 @@ model PatientNote {
   noteType  String   @default("general")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relacionamento
-  patient   Clients  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patient Clients @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
 
 model ToothRecord {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  patientId String   @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId   String   @db.ObjectId
   toothNumber Int
-  procedure String
-  status    String   @default("pending")
-  notes     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
+  procedure   String
+  status      String   @default("pending")
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   // Relacionamento
-  patient   Clients  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patient Clients @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
 
 model TreatmentPlan {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  patientId     String   @db.ObjectId
-  title         String
-  description   String
-  status        String   @default("planned")
-  estimatedCost Float?
-  startDate     DateTime?
-  endDate       DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  // Relacionamento
-  patient       Clients  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  patientId         String    @db.ObjectId
+  title             String
+  description       String
+  status            String    @default("draft")
+  estimatedCost     Float?
+  estimatedSessions Int?
+  startDate         DateTime?
+  endDate           DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  patient Clients @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
 
 model Agenda {
@@ -111,4 +111,3 @@ model Agenda {
   duration   Int      @default(60)
   createdAt  DateTime @default(now())
 }
-

@@ -1,10 +1,10 @@
 export interface PatientNote {
   id: string;
-  patient_id: string;
+  patientId: string;        
   content: string;
-  note_type: string;
-  created_at: string;
-  updated_at?: string;
+  noteType: string;         
+  createdAt: string;
+  updatedAt?: string;
 }
 
 export interface PatientFile {
@@ -35,13 +35,12 @@ export interface ToothRecord {
 
 export interface TreatmentPlan {
   id: string;
-  patient_id: string;
+  patientId: string;         
   title: string;
   description: string;
   status: string;
-  estimated_cost?: number;
-  start_date?: string;
-  end_date?: string;
-  created_at: string;
-  updated_at?: string;
+  estimatedCost?: number;    
+  estimatedSessions?: number;
+  createdAt: string;         
+  updatedAt?: string;        
 }

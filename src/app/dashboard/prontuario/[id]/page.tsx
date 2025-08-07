@@ -26,10 +26,12 @@ export default async function PatientRecordPage({
       where: { id },
       include: {
         files: true,
-        toothRecords: true, 
+        toothRecords: true,
+        notes: true,
+        treatmentPlans: true
       },
     });
-    
+
     if (!client) return redirect('/dashboard/agenda');
 
     return (
@@ -74,19 +76,36 @@ export default async function PatientRecordPage({
                 updated_at: record.updatedAt?.toISOString() || '',
               }))}
             />
-            
-            {/*
+
             <PatientNotes
               patientId={id}
               patientName={client.name}
-              notes={notes}
+              notes={client.notes.map(note => ({
+                id: note.id,
+                patientId: note.patientId,
+                content: note.content,
+                noteType: note.noteType,
+                createdAt: note.createdAt.toISOString(),
+                updatedAt: note.updatedAt?.toISOString() || '',
+              }))}
             />
+
             <TreatmentPlans
               patientId={id}
               patientName={client.name}
-              plans={treatmentPlans}
-            />*/}
-          </div> 
+              plans={client.treatmentPlans.map(plan => ({
+                id: plan.id,
+                patientId: plan.patientId,
+                title: plan.title,
+                description: plan.description,
+                status: plan.status,
+                estimatedCost: plan.estimatedCost || 0,
+                estimatedSessions: plan.estimatedSessions || 0,
+                createdAt: plan.createdAt.toISOString(),
+                updatedAt: plan.updatedAt?.toISOString() || '',
+              }))}
+            />
+          </div>
         </div>
       </div>
     );

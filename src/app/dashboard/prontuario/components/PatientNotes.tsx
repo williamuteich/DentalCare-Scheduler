@@ -1,3 +1,6 @@
+// PatientNotes.tsx
+"use client"
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,30 +10,31 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Plus, Edit, Trash2, FileText, AlertTriangle, DollarSign, Activity } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { supabaseService, PatientNote } from '@/lib/supabase-service';
+import { PatientNote } from '@/types';
+import { useRouter } from 'next/navigation';
+import { addPatientNote, deletePatientNote, updatePatientNote } from '@/app/actions/patient-notes';
 
 interface PatientNotesProps {
   patientId: string;
   patientName: string;
   notes: PatientNote[];
-  onNotesUpdate: () => void;
 }
 
 const PatientNotes: React.FC<PatientNotesProps> = ({ 
   patientId, 
   patientName, 
-  notes,
-  onNotesUpdate
+  notes
 }) => {
+  const router = useRouter();
   const [showDialog, setShowDialog] = useState(false);
   const [editingNote, setEditingNote] = useState<PatientNote | null>(null);
   const [formData, setFormData] = useState({
-    note: '',
-    type: 'general' as 'general' | 'treatment' | 'payment' | 'alert'
+    content: '',
+    noteType: 'general' as 'general' | 'treatment' | 'payment' | 'alert'
   });
 
   const handleSubmit = async () => {
-    if (!formData.note.trim()) {
+    if (!formData.content.trim()) {
       toast({
         title: 'Erro',
         description: 'Por favor, digite uma anotação.',
@@ -41,27 +45,30 @@ const PatientNotes: React.FC<PatientNotesProps> = ({
 
     try {
       if (editingNote) {
-        await supabaseService.updatePatientNote(editingNote.id, {
-          note: formData.note,
-          type: formData.type
+        await updatePatientNote(editingNote.id, {
+          content: formData.content,
+          noteType: formData.noteType
+        });
+        toast({
+          title: 'Sucesso',
+          description: 'Anotação atualizada com sucesso!',
         });
       } else {
-        await supabaseService.addPatientNote({
-          patient_id: patientId,
-          note: formData.note,
-          type: formData.type
+        await addPatientNote({
+          patientId: patientId,
+          content: formData.content,
+          noteType: formData.noteType
+        });
+        toast({
+          title: 'Sucesso',
+          description: 'Anotação adicionada com sucesso!',
         });
       }
 
-      toast({
-        title: 'Sucesso',
-        description: editingNote ? 'Anotação atualizada com sucesso!' : 'Anotação adicionada com sucesso!',
-      });
-
-      setFormData({ note: '', type: 'general' });
+      setFormData({ content: '', noteType: 'general' });
       setEditingNote(null);
       setShowDialog(false);
-      onNotesUpdate();
+      router.refresh();
     } catch (error) {
       console.error('Erro ao salvar anotação:', error);
       toast({
@@ -72,23 +79,14 @@ const PatientNotes: React.FC<PatientNotesProps> = ({
     }
   };
 
-  const handleEdit = (note: PatientNote) => {
-    setEditingNote(note);
-    setFormData({
-      note: note.note,
-      type: note.type as 'general' | 'treatment' | 'payment' | 'alert'
-    });
-    setShowDialog(true);
-  };
-
   const handleDelete = async (noteId: string) => {
     try {
-      await supabaseService.deletePatientNote(noteId);
+      await deletePatientNote(noteId);
       toast({
         title: 'Sucesso',
         description: 'Anotação excluída com sucesso!',
       });
-      onNotesUpdate();
+      router.refresh();
     } catch (error) {
       console.error('Erro ao excluir anotação:', error);
       toast({
@@ -139,7 +137,7 @@ const PatientNotes: React.FC<PatientNotesProps> = ({
   };
 
   const resetForm = () => {
-    setFormData({ note: '', type: 'general' });
+    setFormData({ content: '', noteType: 'general' });
     setEditingNote(null);
   };
 
@@ -166,9 +164,15 @@ const PatientNotes: React.FC<PatientNotesProps> = ({
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Tipo</label>
-                <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value as any })}>
+                <Select 
+                  value={formData.noteType} 
+                  onValueChange={(value) => setFormData({ 
+                    ...formData, 
+                    noteType: value as any 
+                  })}
+                >
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder="Selecione o tipo" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="general">Geral</SelectItem>
@@ -181,8 +185,11 @@ const PatientNotes: React.FC<PatientNotesProps> = ({
               <div>
                 <label className="block text-sm font-medium mb-2">Anotação</label>
                 <Textarea
-                  value={formData.note}
-                  onChange={(e) => setFormData({ ...formData, note: e.target.value })}
+                  value={formData.content}
+                  onChange={(e) => setFormData({ 
+                    ...formData, 
+                    content: e.target.value 
+                  })}
                   placeholder="Digite sua anotação..."
                   rows={4}
                 />
@@ -221,22 +228,33 @@ const PatientNotes: React.FC<PatientNotesProps> = ({
               <CardContent className="p-4">
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex items-center space-x-2">
-                    {getTypeIcon(note.type || 'general')}
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getTypeColor(note.type || 'general')}`}>
-                      {getTypeLabel(note.type || 'general')}
+                    {getTypeIcon(note.noteType || 'general')}
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getTypeColor(note.noteType || 'general')}`}>
+                      {getTypeLabel(note.noteType || 'general')}
                     </span>
                   </div>
                   <div className="flex space-x-1">
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleEdit(note)}
+                      onClick={() => {
+                        setEditingNote(note);
+                        setFormData({
+                          content: note.content,
+                          noteType: note.noteType as any
+                        });
+                        setShowDialog(true);
+                      }}
                     >
                       <Edit className="h-3 w-3" />
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="text-red-600 hover:text-red-700"
+                        >
                           <Trash2 className="h-3 w-3" />
                         </Button>
                       </AlertDialogTrigger>
@@ -261,9 +279,10 @@ const PatientNotes: React.FC<PatientNotesProps> = ({
                     </AlertDialog>
                   </div>
                 </div>
-                <p className="text-gray-700 mb-2">{note.note}</p>
+                <p className="text-gray-700 mb-2">{note.content}</p>
                 <p className="text-xs text-gray-500">
-                  {new Date(note.created_at || '').toLocaleString('pt-BR')}
+                  {new Date(note.createdAt).toLocaleString('pt-BR')}
+                  {note.updatedAt && ` | Atualizada: ${new Date(note.updatedAt).toLocaleString('pt-BR')}`}
                 </p>
               </CardContent>
             </Card>

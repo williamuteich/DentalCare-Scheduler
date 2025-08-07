@@ -1,3 +1,6 @@
+// TreatmentPlans.tsx
+"use client"
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,21 +11,22 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Plus, Edit, Trash2, FileText, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { supabaseService, TreatmentPlan } from '@/lib/supabase-service';
+import { useRouter } from 'next/navigation';
+import { TreatmentPlan } from '@/types';
+import { addTreatmentPlan, deleteTreatmentPlan, updateTreatmentPlan } from '@/app/actions/treatment-plans';
 
 interface TreatmentPlansProps {
   patientId: string;
   patientName: string;
   plans: TreatmentPlan[];
-  onPlansUpdate: () => void;
 }
 
 const TreatmentPlans: React.FC<TreatmentPlansProps> = ({ 
   patientId, 
   patientName, 
-  plans,
-  onPlansUpdate
+  plans
 }) => {
+  const router = useRouter();
   const [showDialog, setShowDialog] = useState(false);
   const [editingPlan, setEditingPlan] = useState<TreatmentPlan | null>(null);
   const [formData, setFormData] = useState({
@@ -47,28 +51,29 @@ const TreatmentPlans: React.FC<TreatmentPlansProps> = ({
       const planData = {
         title: formData.title,
         description: formData.description,
-        estimated_cost: formData.estimatedCost ? parseFloat(formData.estimatedCost) : 0,
-        estimated_sessions: formData.estimatedSessions ? parseInt(formData.estimatedSessions) : 1,
-        status: formData.status
+        estimatedCost: formData.estimatedCost ? parseFloat(formData.estimatedCost) : 0,
+        estimatedSessions: formData.estimatedSessions ? parseInt(formData.estimatedSessions) : 1,
+        status: formData.status,
+        patientId: patientId
       };
 
       if (editingPlan) {
-        await supabaseService.updateTreatmentPlan(editingPlan.id, planData);
+        await updateTreatmentPlan(editingPlan.id, planData);
+        toast({
+          title: 'Sucesso',
+          description: 'Plano atualizado com sucesso!',
+        });
       } else {
-        await supabaseService.addTreatmentPlan({
-          ...planData,
-          patient_id: patientId
+        await addTreatmentPlan(planData);
+        toast({
+          title: 'Sucesso',
+          description: 'Plano adicionado com sucesso!',
         });
       }
 
-      toast({
-        title: 'Sucesso',
-        description: editingPlan ? 'Plano atualizado com sucesso!' : 'Plano adicionado com sucesso!',
-      });
-
       resetForm();
       setShowDialog(false);
-      onPlansUpdate();
+      router.refresh();
     } catch (error) {
       console.error('Erro ao salvar plano:', error);
       toast({
@@ -79,26 +84,14 @@ const TreatmentPlans: React.FC<TreatmentPlansProps> = ({
     }
   };
 
-  const handleEdit = (plan: TreatmentPlan) => {
-    setEditingPlan(plan);
-    setFormData({
-      title: plan.title,
-      description: plan.description,
-      estimatedCost: plan.estimated_cost?.toString() || '',
-      estimatedSessions: plan.estimated_sessions?.toString() || '',
-      status: plan.status as 'draft' | 'approved' | 'in-progress' | 'completed'
-    });
-    setShowDialog(true);
-  };
-
   const handleDelete = async (planId: string) => {
     try {
-      await supabaseService.deleteTreatmentPlan(planId);
+      await deleteTreatmentPlan(planId);
       toast({
         title: 'Sucesso',
         description: 'Plano excluído com sucesso!',
       });
-      onPlansUpdate();
+      router.refresh();
     } catch (error) {
       console.error('Erro ao excluir plano:', error);
       toast({
@@ -209,7 +202,7 @@ const TreatmentPlans: React.FC<TreatmentPlansProps> = ({
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Sessões</label>
+                  <label className="block text-sm font-medium mb-2">Sessões Estimadas</label>
                   <Input
                     type="number"
                     value={formData.estimatedSessions}
@@ -222,7 +215,7 @@ const TreatmentPlans: React.FC<TreatmentPlansProps> = ({
                 <label className="block text-sm font-medium mb-2">Status</label>
                 <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value as any })}>
                   <SelectTrigger>
-                    <SelectValue />
+                    <SelectValue placeholder="Selecione o status" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="draft">Rascunho</SelectItem>
@@ -278,7 +271,17 @@ const TreatmentPlans: React.FC<TreatmentPlansProps> = ({
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleEdit(plan)}
+                      onClick={() => {
+                        setEditingPlan(plan);
+                        setFormData({
+                          title: plan.title,
+                          description: plan.description,
+                          estimatedCost: plan.estimatedCost?.toString() || '',
+                          estimatedSessions: plan.estimatedSessions?.toString() || '',
+                          status: plan.status as 'draft' | 'approved' | 'in-progress' | 'completed'
+                        });
+                        setShowDialog(true);
+                      }}
                     >
                       <Edit className="h-3 w-3" />
                     </Button>
@@ -316,8 +319,8 @@ const TreatmentPlans: React.FC<TreatmentPlansProps> = ({
                   <div>
                     <span className="font-medium">Custo Estimado:</span>
                     <p className="text-gray-600">
-                      {plan.estimated_cost 
-                        ? `R$ ${parseFloat(plan.estimated_cost.toString()).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+                      {plan.estimatedCost 
+                        ? `R$ ${plan.estimatedCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
                         : 'Não informado'
                       }
                     </p>
@@ -328,9 +331,9 @@ const TreatmentPlans: React.FC<TreatmentPlansProps> = ({
                   </div>
                 </div>
                 <div className="flex justify-between items-center mt-4 pt-4 border-t text-xs text-gray-500">
-                  <span>Criado: {new Date(plan.created_at || '').toLocaleDateString('pt-BR')}</span>
-                  {plan.updated_at && plan.updated_at !== plan.created_at && (
-                    <span>Atualizado: {new Date(plan.updated_at).toLocaleDateString('pt-BR')}</span>
+                  <span>Criado: {new Date(plan.createdAt).toLocaleDateString('pt-BR')}</span>
+                  {plan.updatedAt && plan.updatedAt !== plan.createdAt && (
+                    <span>Atualizado: {new Date(plan.updatedAt).toLocaleDateString('pt-BR')}</span>
                   )}
                 </div>
               </CardContent>
