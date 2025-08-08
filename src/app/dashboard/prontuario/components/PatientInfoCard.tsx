@@ -22,7 +22,8 @@ const PatientInfoCard: React.FC<PatientInfoCardProps> = ({ client }) => {
 
   const formatDate = (date: Date | null) => {
     if (!date) return 'Não informada';
-    return format(date, 'dd/MM/yyyy', { locale: ptBR });
+    const localDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+    return format(localDate, 'dd/MM/yyyy', { locale: ptBR });
   };
 
   // Componente auxiliar para campos

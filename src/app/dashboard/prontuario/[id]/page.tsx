@@ -43,24 +43,13 @@ export default async function PatientRecordPage({
           </p>
         </div>
 
+        {/* Dados do paciente em destaque no topo */}
+        <div className="mb-8">
+          <PatientInfoCard client={{ ...client, _id: client.id }} />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1 space-y-6">
-            <PatientInfoCard client={{ ...client, _id: client.id }} />
-            <PatientFileUpload
-              patientId={id}
-              files={client.files.map((file: any) => ({
-                id: file.id,
-                patient_id: file.patientId,
-                file_name: file.fileName,
-                file_path: file.filePath,
-                file_type: file.fileType,
-                file_size: file.fileSize,
-                description: file.description,
-                created_at: file.createdAt,
-                original_name: file.originalName,
-              }))}
-            />
-          </div>
+          {/* Coluna da esquerda - Odontograma e Anotações */}
           <div className="lg:col-span-2 space-y-6">
             <ToothChart
               patientId={id}
@@ -87,6 +76,24 @@ export default async function PatientRecordPage({
                 noteType: note.noteType,
                 createdAt: note.createdAt.toISOString(),
                 updatedAt: note.updatedAt?.toISOString() || '',
+              }))}
+            />
+          </div>
+
+          {/* Coluna da direita - Arquivos e Planos de Tratamento */}
+          <div className="lg:col-span-1 space-y-6">
+            <PatientFileUpload
+              patientId={id}
+              files={client.files.map((file: any) => ({
+                id: file.id,
+                patient_id: file.patientId,
+                file_name: file.fileName,
+                file_path: file.filePath,
+                file_type: file.fileType,
+                file_size: file.fileSize,
+                description: file.description,
+                created_at: file.createdAt,
+                original_name: file.originalName,
               }))}
             />
 

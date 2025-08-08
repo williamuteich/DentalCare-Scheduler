@@ -31,7 +31,7 @@ export const StatsCards = ({ stats }: StatsCardsProps) => {
       
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-medium">Receita Prevista</CardTitle>
+          <CardTitle className="text-sm font-medium">Receita Prevista do Dia</CardTitle>
           <FiDollarSign className="text-amber-500" size={20} />
         </CardHeader>
         <CardContent>
