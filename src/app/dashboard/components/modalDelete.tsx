@@ -99,7 +99,7 @@ export default function ButtonDelete({ config }: ButtonDeleteProps) {
                         <Submit className="bg-red-700 cursor-pointer mt-4 text-white w-full hover:bg-red-600" >Excluir</Submit>
                     </AlertDialogFooter>
                 </Form>
-                <AlertDialogCancel className="bg-blue-800 hover:bg-blue-700 text-white w-full mt-2">Fechar</AlertDialogCancel>
+                <AlertDialogCancel className="bg-blue-800 hover:bg-blue-700 text-white w-full mt-2 cursor-pointer hover:text-white">Fechar</AlertDialogCancel>
             </AlertDialogContent>
         </AlertDialog>
     );

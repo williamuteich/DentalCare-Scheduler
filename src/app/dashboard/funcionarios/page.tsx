@@ -1,19 +1,8 @@
 import { headers } from "next/headers";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { FiUser, FiUserCheck } from "react-icons/fi";
-import ModalGeneric from "../components/modalGeneric";
-import ModalDelete from "../components/modalDelete";
-import {
-  AddFuncionarioButton,
-  funcionarioModalConfig,
-} from "./components/configs";
+import { FiUser } from "react-icons/fi";
+import { AddFuncionarioButton } from "./components/configs";
+import FuncionarioTable from "./components/FuncionarioTable";
+import FuncionarioCardList from "./components/FuncionarioCardList";
 import { ApiUser, Funcionario } from "@/types/funcionarios";
 
 export const dynamic = "force-dynamic";
@@ -102,7 +91,7 @@ export default async function FuncionariosPage() {
   }
 
   return (
-    <div className="w-full  mx-auto p-4">
+    <div className="w-full mx-auto p-4">
       <div className="mb-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
           <div>
@@ -117,185 +106,13 @@ export default async function FuncionariosPage() {
           <AddFuncionarioButton />
         </div>
       </div>
-
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="hidden md:block">
-          <Table className="w-full">
-            <TableHeader className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-              <TableRow className="hover:bg-indigo-700">
-                <TableHead className="px-6 py-4 font-semibold uppercase text-white">
-                  Funcionário
-                </TableHead>
-                <TableHead className="px-6 py-4 font-semibold uppercase text-white">
-                  E-mail
-                </TableHead>
-                <TableHead className="px-6 py-4 font-semibold uppercase text-white">
-                  Cargo
-                </TableHead>
-                <TableHead className="px-6 py-4 font-semibold uppercase text-white">
-                  Status
-                </TableHead>
-                <TableHead className="px-6 py-4 text-right font-semibold uppercase text-white">
-                  Ações
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {funcionarios.map((funcionario) => (
-                <TableRow
-                  key={funcionario.id}
-                  className="border-t border-gray-100 hover:bg-blue-50 transition-colors duration-150"
-                >
-                  <TableCell className="px-6 py-4 font-medium text-gray-900">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-blue-100 p-2 rounded-full">
-                        <FiUser className="text-blue-600" size={20} />
-                      </div>
-                      <span>{funcionario.name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="px-6 py-4 text-gray-700">
-                    {funcionario.email}
-                  </TableCell>
-                  <TableCell className="px-6 py-4">
-                    <span
-                      className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
-                        funcionario.role === "admin"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-gray-100 text-gray-800"
-                      }`}
-                    >
-                      {funcionario.role === "admin"
-                        ? "Administrador"
-                        : "Colaborador"}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-6 py-4">
-                    <span
-                      className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${
-                        funcionario.active === "true"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
-                    >
-                      {funcionario.active === "true" ? (
-                        <>
-                          <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                          Ativo
-                        </>
-                      ) : (
-                        <>
-                          <span className="h-2 w-2 rounded-full bg-red-500"></span>
-                          Inativo
-                        </>
-                      )}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-6 py-4 text-right">
-                    <div className="flex justify-end items-center gap-2">
-                      <ModalGeneric
-                        config={funcionarioModalConfig("Editar", funcionario)}
-                        params={funcionario.id}
-                      />
-                      <ModalDelete
-                        config={{
-                          id: funcionario.id,
-                          title:
-                            "Tem certeza que deseja excluir esse funcionário?",
-                          description:
-                            "Esta ação não pode ser desfeita. O funcionário será removido permanentemente.",
-                          apiEndpoint: `${process.env.NEXT_URL}/api/privada/users/delete`,
-                          urlRevalidate: ["/dashboard/funcionarios"],
-                        }}
-                      />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <FuncionarioTable funcionarios={funcionarios} />
         </div>
-
-        {/* Cards para mobile */}
-        <div className="md:hidden">
-          {funcionarios.map((funcionario) => (
-            <div
-              key={funcionario.id}
-              className="flex flex-col gap-3 p-4 border-b border-gray-100 last:border-b-0"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="bg-blue-100 p-2 rounded-full">
-                    <FiUser className="text-blue-600" size={20} />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">
-                      {funcionario.name}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {funcionario.email}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <span
-                  className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
-                    funcionario.role === "admin"
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {funcionario.role === "admin"
-                    ? "Administrador"
-                    : "Colaborador"}
-                </span>
-
-                <span
-                  className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium ${
-                    funcionario.active === "true"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                  }`}
-                >
-                  {funcionario.active === "true" ? (
-                    <>
-                      <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                      Ativo
-                    </>
-                  ) : (
-                    <>
-                      <span className="h-2 w-2 rounded-full bg-red-500"></span>
-                      Inativo
-                    </>
-                  )}
-                </span>
-              </div>
-
-              <div className="flex gap-3 justify-end pt-2">
-                <ModalGeneric
-                  config={funcionarioModalConfig("Editar", funcionario)}
-                  params={funcionario.id}
-                />
-                <ModalDelete
-                  config={{
-                    id: funcionario.id,
-                    title: "Excluir funcionário",
-                    description:
-                      "Tem certeza que deseja excluir este funcionário?",
-                    apiEndpoint: `${process.env.NEXT_URL}/api/agendamento/users/${funcionario.id}`,
-                    urlRevalidate: ["/dashboard/funcionarios"],
-                  }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-
+        <FuncionarioCardList funcionarios={funcionarios} />
         <div className="p-4 text-center text-sm text-gray-500 border-t border-gray-100">
-          {funcionarios.length}{" "}
-          {funcionarios.length === 1 ? "funcionário" : "funcionários"} cadastrados
+          {funcionarios.length} {funcionarios.length === 1 ? "funcionário" : "funcionários"} cadastrados
         </div>
       </div>
     </div>
