@@ -3,7 +3,7 @@
 import React, { useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FiCalendar, FiUsers, FiUser, FiHome, FiSettings, FiLogOut } from "react-icons/fi";
+import { FiCalendar, FiUsers, FiUser, FiHome, FiLogOut } from "react-icons/fi";
 import { signOut } from "next-auth/react";
 import { GiTooth } from "react-icons/gi";
 
@@ -21,9 +21,6 @@ export default function Sidebar({
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const [isPending, startTransition] = useTransition()
-
-
 
   return (
     <div className="flex h-screen">

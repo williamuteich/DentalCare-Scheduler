@@ -96,7 +96,7 @@ export const MonthView = ({
                         </span>
                       )}
                       <Link
-                        href={`/prontuario/${appt.clientId}`}
+                        href={`/dashboard/prontuario/${appt.clientId}`}
                         onClick={e => e.stopPropagation()}
                         className="mt-1 inline-block text-blue-600 hover:underline font-medium"
                       >

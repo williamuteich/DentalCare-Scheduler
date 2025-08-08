@@ -69,7 +69,7 @@ export const AppointmentCard = ({
       
       <div className="flex sm:flex-col gap-2 sm:w-32 justify-end">
         <Link
-          href={`/prontuario/${appointment.clientId}`}
+          href={`/dashboard/prontuario/${appointment.clientId}`}
           className="inline-block text-blue-600 hover:underline font-medium mb-2"
           style={{ textAlign: 'center' }}
           tabIndex={0}

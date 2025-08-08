@@ -4,10 +4,27 @@ import { AddFuncionarioButton } from "./components/configs";
 import FuncionarioTable from "./components/FuncionarioTable";
 import FuncionarioCardList from "./components/FuncionarioCardList";
 import { ApiUser, Funcionario } from "@/types/funcionarios";
-
+import { auth as authOptions } from "@/lib/auth-config";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 export const dynamic = "force-dynamic";
 
 export default async function FuncionariosPage() {
+  const session = await getServerSession(authOptions);
+
+  if(!session || session.user.role !== "admin") {
+    return (
+      <div className="flex items-center justify-center min-h-screen p-8 text-center">
+        <div className="max-w-md">
+          <h2 className="text-3xl font-semibold text-red-600">Acesso Negado</h2>
+          <p className="text-gray-600">
+            Você não tem permissão para acessar esta página.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   let funcionarios: Funcionario[] = [];
 
   try {
