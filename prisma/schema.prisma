@@ -109,5 +109,7 @@ model Agenda {
   value      Float
   note       String?
   duration   Int      @default(60)
+  professionalId String? @db.ObjectId
+  professionalName String?
   createdAt  DateTime @default(now())
 }

@@ -9,6 +9,8 @@ export interface Appointment {
     value: number;
     note?: string;
     duration?: number;
+    professionalId?: string;
+    professionalName?: string;
 }
 
 export interface AgendaHeaderProps {

@@ -30,6 +30,11 @@ function SelectPaciente({ clients, value, onChange }: { clients: any[]; value: s
 }
 
 
+interface Professional {
+  id: string;
+  name: string;
+}
+
 export const AppointmentForm = ({
   open,
   onOpenChange,
@@ -45,6 +50,24 @@ export const AppointmentForm = ({
   const [note, setNote] = useState<string>("");
   const [duration, setDuration] = useState<string>("60");
   const [submitting, setSubmitting] = useState(false);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [selectedProfessionalId, setSelectedProfessionalId] = useState<string>("");
+  const [selectedProfessionalName, setSelectedProfessionalName] = useState<string>("");
+  // Buscar profissionais ativos (staff)
+  useEffect(() => {
+    const fetchProfessionals = async () => {
+      try {
+        const res = await fetch('/api/privada/users/get');
+        const data = await res.json();
+        setProfessionals(
+          data.map((u: any) => ({ id: u.id, name: u.name }))
+        );
+      } catch (err) {
+        setProfessionals([]);
+      }
+    };
+    fetchProfessionals();
+  }, []);
 
   useEffect(() => {
     if (editingAppointment) {
@@ -67,6 +90,14 @@ export const AppointmentForm = ({
       setValue(editingAppointment.value !== undefined ? String(editingAppointment.value) : "");
       setNote(editingAppointment.note || editingAppointment.notes || "");
       setDuration(editingAppointment.duration !== undefined ? String(editingAppointment.duration) : "60");
+      setSelectedProfessionalId(editingAppointment.professionalId || "");
+      // Busca o nome do profissional pelo id salvo
+      if (editingAppointment.professionalId) {
+        const foundProf = professionals.find(p => p.id === editingAppointment.professionalId);
+        setSelectedProfessionalName(foundProf?.name || editingAppointment.professionalName || "");
+      } else {
+        setSelectedProfessionalName("");
+      }
     } else {
       setSelectedClientId("");
       setTitle("");
@@ -75,6 +106,8 @@ export const AppointmentForm = ({
       setValue("");
       setNote("");
       setDuration("60");
+      setSelectedProfessionalId("");
+      setSelectedProfessionalName("");
     }
   }, [editingAppointment, currentDate, clients]);
 
@@ -87,7 +120,8 @@ export const AppointmentForm = ({
 
   const handleLocalSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!selectedClientId || !title) return;
+    if (!selectedClientId || !title || !selectedProfessionalId) return;
+    const professional = professionals.find((p) => p.id === selectedProfessionalId);
     const client = clients.find((c: any) => String(c._id || c.id) === String(selectedClientId));
     if (!client) {
       alert('Selecione um paciente válido!');
@@ -109,6 +143,10 @@ export const AppointmentForm = ({
         if (value !== String(editingAppointment.value)) patchPayload.value = value ? parseFloat(value) : 0;
         if (note !== (editingAppointment.note || editingAppointment.notes || "")) patchPayload.note = note;
         if (duration !== String(editingAppointment.duration)) patchPayload.duration = duration ? parseInt(duration) : 60;
+        if (selectedProfessionalId !== editingAppointment.professionalId) {
+          patchPayload.professionalId = selectedProfessionalId;
+          patchPayload.professionalName = professional?.name;
+        }
         res = await fetch(`/api/privada/agenda/patch`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
@@ -123,7 +161,9 @@ export const AppointmentForm = ({
           time,
           value: value ? parseFloat(value) : 0,
           note,
-          duration: duration ? parseInt(duration) : 60
+          duration: duration ? parseInt(duration) : 60,
+          professionalId: selectedProfessionalId,
+          professionalName: professional?.name
         };
         res = await fetch('/api/privada/agenda/post', {
           method: 'POST',
@@ -160,6 +200,27 @@ export const AppointmentForm = ({
           <div className="space-y-2">
             <Label htmlFor="clientId">Paciente</Label>
             <SelectPaciente clients={clients} value={selectedClientId} onChange={e => setSelectedClientId(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="professionalId">Profissional</Label>
+            <select
+              id="professionalId"
+              name="professionalId"
+              value={selectedProfessionalId}
+              onChange={e => {
+                setSelectedProfessionalId(e.target.value);
+                const found = professionals.find(p => p.id === e.target.value);
+                setSelectedProfessionalName(found?.name || "");
+              }}
+              required
+              className="border rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="Profissional"
+            >
+              <option value="">Selecione um profissional</option>
+              {professionals.map((prof) => (
+                <option key={prof.id} value={prof.id}>{prof.name}</option>
+              ))}
+            </select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="title">Procedimento</Label>

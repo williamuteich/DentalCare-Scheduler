@@ -14,6 +14,8 @@ interface AppointmentUpdate {
   note?: string;
   duration?: number;
   completed?: boolean;
+  professionalId?: string;
+  professionalName?: string;
 }
 
 export async function PATCH(request: Request) {

@@ -31,6 +31,8 @@ export interface ToothRecord {
   completed_at?: string;
   priority?: string;
   cost?: number;
+  professionalId?: string; // id do profissional responsável
+  professionalName?: string; // nome do profissional (opcional, para exibição)
 }
 
 export interface TreatmentPlan {

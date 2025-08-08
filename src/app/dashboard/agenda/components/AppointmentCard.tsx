@@ -57,7 +57,12 @@ export const AppointmentCard = ({
                 <FiUser size={14} />
                 <span>{clients.find(c => c._id === appointment.clientId)?.phone || "Sem telefone"}</span>
               </div>
-              
+              {appointment.professionalName && (
+                <div className="flex items-center gap-1 text-sm text-blue-700 font-medium">
+                  <FiUser size={14} />
+                  <span>Profissional: {appointment.professionalName}</span>
+                </div>
+              )}
               <div className="flex items-center gap-1 text-sm font-medium text-amber-700">
                 <FiDollarSign size={14} />
                 <span>R$ {Number(appointment.value).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>

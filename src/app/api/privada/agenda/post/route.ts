@@ -12,6 +12,8 @@ interface AppointmentRequest {
   value: number;
   note?: string;
   duration?: number; // in minutes
+  professionalId?: string;
+  professionalName?: string;
 }
 
 export async function POST(request: Request) {
@@ -26,6 +28,8 @@ export async function POST(request: Request) {
       value,
       note = "",
       duration = 60,
+      professionalId = undefined,
+      professionalName = undefined,
     } = body;
 
     if (!date || !time || !title || !clientId || !clientName || value == null) {
@@ -55,18 +59,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Conflito de horário" }, { status: 400 });
     }
 
+    const agendaData: any = {
+      date,
+      time,
+      title,
+      clientId,
+      clientName,
+      value,
+      note,
+      duration,
+      completed: false,
+      professionalName,
+    };
+    if (professionalId && professionalId !== "") {
+      agendaData.professionalId = professionalId;
+    }
     const newAppointment = await prisma.agenda.create({
-      data: {
-        date,
-        time,
-        title,
-        clientId,
-        clientName,
-        value,
-        note,
-        duration,
-        completed: false,
-      },
+      data: agendaData,
     });
 
     return NextResponse.json(newAppointment, { status: 201 });
