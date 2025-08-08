@@ -1,4 +1,7 @@
+import type { PatientNote, ToothRecord, TreatmentPlan } from '@/types';
+
 export interface Client {
+  _id: string;
   id: string;
   name: string;
   email: string;
@@ -13,4 +16,22 @@ export interface Client {
   emergencyContactPhone: string | null;
   active: boolean;
   createdAt: Date;
+}
+
+export interface PatientNotesProps {
+  patientId: string;
+  patientName: string;
+  notes: PatientNote[];
+}
+
+export interface ToothChartProps {
+  patientId: string;
+  patientName: string;
+  toothRecords: ToothRecord[];
+}
+
+export interface TreatmentPlansProps {
+  patientId: string;
+  patientName: string;
+  plans: TreatmentPlan[];
 }

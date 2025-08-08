@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { auth as authOptions} from "@/lib/auth-config";
 import { redirect } from 'next/navigation';
 import Sidebar from "./components/sidebar";
+import AuthProvider from "./components/auth-provider";
 
 export default async function DashboardLayout({
   children,
@@ -16,6 +17,8 @@ export default async function DashboardLayout({
   }
 
   return (
-    <Sidebar>{children}</Sidebar>
+    <AuthProvider>
+      <Sidebar>{children}</Sidebar>
+    </AuthProvider>
   );
 }

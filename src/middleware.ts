@@ -6,7 +6,7 @@ export default withAuth(
   async function middleware(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-    if (req.nextUrl.pathname.startsWith('/dashboard') && (!token?.role || token.role !== 'admin')) {
+    if (req.nextUrl.pathname.startsWith('/dashboard') && (!token?.role)) {
       return NextResponse.redirect(new URL("/unauthorized", req.url));
     }
 

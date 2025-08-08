@@ -1,15 +1,8 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatsCardsProps } from '@/types/agenda';
 import { FiCheck, FiClock, FiDollarSign } from 'react-icons/fi';
-
-interface StatsCardsProps {
-  stats: {
-    total: number;
-    completed: number;
-    revenue: number;
-  };
-}
 
 export const StatsCards = ({ stats }: StatsCardsProps) => {
   return (

@@ -3,15 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { FiChevronLeft, FiChevronRight, FiClock } from 'react-icons/fi';
 import { format, isToday } from 'date-fns';
-
-interface AgendaHeaderProps {
-  currentDate: Date;
-  viewMode: 'day' | 'week' | 'month';
-  onNavigate: (direction: number) => void;
-  onToday: () => void;
-  onViewChange: (mode: 'day' | 'week' | 'month') => void;
-  headerText: string;
-}
+import { AgendaHeaderProps } from '@/types/agenda';
 
 export const AgendaHeader = ({
   currentDate,

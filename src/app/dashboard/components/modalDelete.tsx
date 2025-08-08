@@ -11,19 +11,9 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { ButtonDeleteProps } from "@/types/buttonDelete";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
-
-interface ButtonDeleteProps {
-    config: {
-        id: string;
-        title: string;
-        description: string;
-        apiEndpoint: string;
-        urlRevalidate: string[];
-        tags?: string[];
-    }
-}
 
 export default function ButtonDelete({ config }: ButtonDeleteProps) {
     async function handleDelete(prevState: any, formData: FormData): Promise<{ success?: string; error?: string }> {

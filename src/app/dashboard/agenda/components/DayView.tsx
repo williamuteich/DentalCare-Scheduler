@@ -5,17 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FiClock } from 'react-icons/fi';
 import { AppointmentCard } from './AppointmentCard';
 import { Skeleton } from '@/components/ui/skeleton';
-
-interface DayViewProps {
-  loading: boolean;
-  appointments: any[];
-  clients: any[];
-  onComplete: (id: string) => void;
-  onEdit: (appointment: any) => void;
-  onDelete: (id: string) => void;
-  processing: string | null;
-  searchTerm: string;
-}
+import { DayViewProps } from '@/types/agenda';
 
 export const DayView = ({
   loading,

@@ -5,15 +5,7 @@ import { Button } from '@/components/ui/button';
 import { FiCheck, FiEdit, FiTrash, FiUser, FiDollarSign, FiInfo, FiClock, FiLoader } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-
-interface AppointmentCardProps {
-  appointment: any;
-  clients: any[];
-  onComplete: (id: string) => void;
-  onEdit: (appointment: any) => void;
-  onDelete: (id: string) => void;
-  processing: string | null;
-}
+import { AppointmentCardProps } from '@/types/agenda';
 
 export const AppointmentCard = ({
   appointment,

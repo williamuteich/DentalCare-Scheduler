@@ -2,13 +2,8 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { SearchBarProps } from '@/types/agenda';
 import { FiPlus, FiUser } from 'react-icons/fi';
-
-interface SearchBarProps {
-  searchTerm: string;
-  onSearchChange: (term: string) => void;
-  onNewAppointment: () => void;
-}
 
 export const SearchBar = ({
   searchTerm,

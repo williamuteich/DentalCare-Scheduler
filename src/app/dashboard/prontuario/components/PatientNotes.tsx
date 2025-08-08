@@ -1,4 +1,3 @@
-// PatientNotes.tsx
 "use client"
 
 import React, { useState } from 'react';
@@ -13,16 +12,11 @@ import { toast } from '@/hooks/use-toast';
 import { PatientNote } from '@/types';
 import { useRouter } from 'next/navigation';
 import { addPatientNote, deletePatientNote, updatePatientNote } from '@/app/actions/patient-notes';
+import { PatientNotesProps } from '@/types/client';
 
-interface PatientNotesProps {
-  patientId: string;
-  patientName: string;
-  notes: PatientNote[];
-}
 
 const PatientNotes: React.FC<PatientNotesProps> = ({ 
   patientId, 
-  patientName, 
   notes
 }) => {
   const router = useRouter();

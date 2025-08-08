@@ -15,28 +15,10 @@ import { DayView } from "./DayView";
 import { WeekView } from "./WeekView";
 import { MonthView } from "./MonthView";
 import { AppointmentForm } from "./AppointmentForm";
+import { Client } from "@/types/client";
+import { Appointment } from "@/types/agenda";
 
 type ViewMode = "day" | "week" | "month";
-
-interface Client {
-  _id: string;
-  name: string;
-  phone?: string;
-  email?: string;
-}
-
-interface Appointment {
-  _id: string;
-  date: string;
-  time: string;
-  title: string;
-  completed?: boolean;
-  clientId: string;
-  clientName: string;
-  value: number;
-  note?: string;
-  duration?: number;
-}
 
 const AgendaClient: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("day");

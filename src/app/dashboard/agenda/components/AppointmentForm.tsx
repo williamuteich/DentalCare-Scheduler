@@ -8,17 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { format } from 'date-fns';
 import { useState, useEffect } from 'react';
-
-interface AppointmentFormProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  editingAppointment?: any;
-  clients: any[];
-  currentDate: Date;
-  allAppointments?: any[];
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  processing?: string | null;
-}
+import { AppointmentFormProps } from '@/types/agenda';
 
 function SelectPaciente({ clients, value, onChange }: { clients: any[]; value: string; onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void }) {
   return (

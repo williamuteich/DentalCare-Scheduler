@@ -1,3 +1,4 @@
+import { Client } from "@/types/client";
 // src/app/dashboard/clientes/page.tsx
 
 import React from "react";
@@ -13,27 +14,10 @@ import { BotaoAdicionarCliente, configModalCliente } from "./components/configs"
 import ModalGeneric from "../components/modalGeneric";
 import ButtonDelete from "../components/modalDelete";
 
-interface ApiCliente {
-  _id?: string;
-  id?: string;
-  name: string;
-  email: string;
-  address?: string;
-  cpf?: string;
-  birthDate?: string;
-  medicalHistory?: string;
-  allergies?: string;
-  emergencyContactName?: string;
-  emergencyContactPhone?: string;
-  active: boolean;
-}
 
-interface Cliente extends ApiCliente {
-  id: string;
-}
 
 export default async function PaginaClientes() {
-  let clientes: Cliente[] = [];
+  let clientes: Client[] = [];
 
   try {
     const listaHeaders = headers();
@@ -57,28 +41,34 @@ export default async function PaginaClientes() {
       );
     }
 
-    const dadosApi: ApiCliente[] = await resposta.json();
+    const dadosApi: Client[] = await resposta.json();
 
     clientes = dadosApi.map((c) => ({
-      id: (c.id || c._id || c.email) as string,
+      _id: c._id ?? c.id ?? c.email ?? '',
+      id: c.id ?? c._id ?? c.email ?? '',
       name: c.name,
       email: c.email,
-      address: c.address,
+      phone: c.phone ?? '',
       cpf: c.cpf,
-      birthDate: c.birthDate,
-      medicalHistory: c.medicalHistory,
+      birthDate: c.birthDate ? new Date(c.birthDate) : null,
+      address: c.address,
+      historico: c.historico ?? '',
       allergies: c.allergies,
+      medicalHistory: c.medicalHistory,
       emergencyContactName: c.emergencyContactName,
       emergencyContactPhone: c.emergencyContactPhone,
       active: c.active ?? true,
+      createdAt: c.createdAt ? new Date(c.createdAt) : new Date(),
     }));
   } catch (erro) {
     console.error("Erro ao carregar clientes:", erro);
     return null;
   }
 
-  function parseDateAsLocal(dateStr: string) {
-    const [year, month, day] = dateStr.split("-").map(Number);
+  function parseDateAsLocal(date: Date | string) {
+    if (date instanceof Date) return date;
+    if (!date) return new Date('');
+    const [year, month, day] = date.split("-").map(Number);
     return new Date(year, month - 1, day);
   }
 

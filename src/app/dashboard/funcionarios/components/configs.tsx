@@ -1,14 +1,6 @@
+import { FuncionarioInitialValues } from "@/types/funcionarios";
 import ModalGeneric from "../../components/modalGeneric";
-import { FieldConfig } from "@/utils/types/modalGeneric";
-
-interface FuncionarioInitialValues {
-  id?: string;
-  name?: string;
-  email?: string;
-  role?: "admin" | "staff";
-  password?: string;
-  active?: "true" | "false";
-}
+import { FieldConfig } from "@/types/modalGeneric";
 
 export const funcionarioModalConfig = (
   action: "Adicionar" | "Editar",

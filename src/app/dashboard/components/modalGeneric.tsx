@@ -25,7 +25,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import Form from "@/app/components/Form";
 import Submit from "@/app/components/Submit";
-import { ButtonAdicionarProps } from "@/utils/types/modalGeneric";
+import { ButtonAdicionarProps } from "@/types/modalGeneric";
 
 export default function ButtonAdicionar({ config, params }: ButtonAdicionarProps) {
 

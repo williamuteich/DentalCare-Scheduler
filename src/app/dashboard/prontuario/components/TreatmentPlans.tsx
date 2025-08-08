@@ -1,4 +1,3 @@
-// TreatmentPlans.tsx
 "use client"
 
 import React, { useState } from 'react';
@@ -14,16 +13,10 @@ import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { TreatmentPlan } from '@/types';
 import { addTreatmentPlan, deleteTreatmentPlan, updateTreatmentPlan } from '@/app/actions/treatment-plans';
-
-interface TreatmentPlansProps {
-  patientId: string;
-  patientName: string;
-  plans: TreatmentPlan[];
-}
+import { TreatmentPlansProps } from '@/types/client';
 
 const TreatmentPlans: React.FC<TreatmentPlansProps> = ({ 
   patientId, 
-  patientName, 
   plans
 }) => {
   const router = useRouter();

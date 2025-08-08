@@ -1,25 +1,12 @@
 // src/app/dashboard/clientes/components/configs.tsx
 
-import { FieldConfig } from "@/utils/types/modalGeneric";
+import { FieldConfig } from "@/types/modalGeneric";
 import ModalGeneric from "../../components/modalGeneric";
-
-interface ClienteValoresIniciais {
-  id?: string;
-  name?: string;
-  email?: string;
-  address?: string;
-  cpf?: string;
-  birthDate?: string;
-  medicalHistory?: string;
-  allergies?: string;
-  emergencyContactName?: string;
-  emergencyContactPhone?: string;
-  active?: string | boolean;
-}
+import { Client } from "@/types/client";
 
 export const configModalCliente = (
   action: "Adicionar" | "Editar",
-  initialValues?: ClienteValoresIniciais
+  initialValues?: Client
 ) => {
   const initialValuesFormatted: { [key: string]: string } | undefined = initialValues
     ? {
@@ -27,8 +14,8 @@ export const configModalCliente = (
         email: initialValues.email ?? "",
         address: initialValues.address ?? "",
         cpf: initialValues.cpf ?? "",
-        birthDate: initialValues.birthDate ?
-          (typeof initialValues.birthDate === "string" ? initialValues.birthDate.split("T")[0] : new Date(initialValues.birthDate).toISOString().split("T")[0])
+        birthDate: initialValues.birthDate
+          ? new Date(initialValues.birthDate).toISOString().split("T")[0]
           : "",
         medicalHistory: initialValues.medicalHistory ?? "",
         allergies: initialValues.allergies ?? "",

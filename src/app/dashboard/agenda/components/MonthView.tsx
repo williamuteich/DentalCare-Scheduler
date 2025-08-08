@@ -6,14 +6,7 @@ import { format, isToday, isSameMonth, startOfMonth, endOfMonth, eachDayOfInterv
 import { FiClock } from 'react-icons/fi';
 import { useMemo } from 'react';
 import Link from 'next/link';
-
-interface MonthViewProps {
-  loading: boolean;
-  currentDate: Date;
-  allAppointments: any[];
-  onDayClick: (day: Date) => void;
-  onAppointmentClick: (appointment: any) => void;
-}
+import { MonthViewProps } from '@/types/agenda';
 
 export const MonthView = ({
   loading,

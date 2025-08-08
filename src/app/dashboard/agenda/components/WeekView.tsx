@@ -7,20 +7,12 @@ import { ptBR } from 'date-fns/locale';
 import { FiClock } from 'react-icons/fi';
 import { useMemo } from 'react';
 import Link from 'next/link';
-
-interface WeekViewProps {
-  loading: boolean;
-  currentDate: Date;
-  allAppointments: any[];
-  onDayClick: (day: Date) => void;
-  onAppointmentClick: (appointment: any) => void;
-}
+import { WeekViewProps } from '@/types/agenda';
 
 export const WeekView = ({
   loading,
   currentDate,
   allAppointments,
-  onDayClick,
   onAppointmentClick
 }: WeekViewProps) => {
   const weekDays = useMemo(() => {

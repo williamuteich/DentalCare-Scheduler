@@ -14,6 +14,7 @@ import { Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { ToothRecord } from '@/types';
 import { useRouter } from 'next/navigation';
 import { addToothRecord, updateToothRecord } from '@/app/actions/tooth-records';
+import { ToothChartProps } from '@/types/client';
 
 const procedures = [
   'Cárie',
@@ -43,12 +44,6 @@ const statusOptions = [
   { value: 'completed', label: 'Concluído', icon: CheckCircle, color: 'text-green-600' },
   { value: 'cancelled', label: 'Cancelado', icon: XCircle, color: 'text-red-600' },
 ];
-
-interface ToothChartProps {
-  patientId: string;
-  patientName: string;
-  toothRecords: ToothRecord[];
-}
 
 const ToothChart: React.FC<ToothChartProps> = ({ 
   patientId, 

@@ -1,4 +1,3 @@
-import React from "react";
 import { headers } from "next/headers";
 import {
   Table,
@@ -15,25 +14,9 @@ import {
   AddFuncionarioButton,
   funcionarioModalConfig,
 } from "./components/configs";
+import { ApiUser, Funcionario } from "@/types/funcionarios";
 
 export const dynamic = "force-dynamic";
-
-interface ApiUser {
-  _id?: string;
-  id?: string;
-  name?: string;
-  email: string;
-  role?: string;
-  active: true | false;
-}
-
-interface Funcionario {
-  id: string;
-  name: string;
-  email: string;
-  role: "admin" | "staff";
-  active: "true" | "false";
-}
 
 export default async function FuncionariosPage() {
   let funcionarios: Funcionario[] = [];
